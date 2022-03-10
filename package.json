@@ -1,0 +1,23 @@
+{
+  "name": "vanillajs_spa_shoppingmall",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yyoooon/VanillaJS_SPA_ShoppingMall.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yyoooon/VanillaJS_SPA_ShoppingMall/issues"
+  },
+  "homepage": "https://github.com/yyoooon/VanillaJS_SPA_ShoppingMall#readme",
+  "dependencies": {
+    "serve": "^13.0.2"
+  }
+}
