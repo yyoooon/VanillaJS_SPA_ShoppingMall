@@ -1,1 +1,1 @@
-# VanillaJs_SPA_ShoppingMall
+# VanillaJS_SPA_ShoppingMall
