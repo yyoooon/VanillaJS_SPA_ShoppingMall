@@ -36,24 +36,9 @@ export default class Component {
     this.render();
   }
 
-  addEventToTarget(
-    eventType,
-    selector,
-    callback,
-  ) {
-    const children = [...Array.from(this.$target.querySelectorAll(selector))];
-
-    const isTarget = (target) => {
-      if (target instanceof HTMLElement) {
-        return children.includes(target) || target.closest(selector);
-      }
-    };
-
-    this.$target.addEventListener(eventType, event => {
-      if (!isTarget(event.target)) return false;
-      callback(event);
-    });
-  }
+ removeParentNode(){
+  this.$target.replaceWith(... this.$target.childNodes);
+ }
 }
 
 
