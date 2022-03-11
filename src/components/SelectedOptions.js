@@ -3,8 +3,15 @@ import formatPriceAddComma from '../utils/formatPrice.js';
 
 export default class SelectedOptions extends Component {
   template() {
-    const { productPrice, selectedOption, selectedOptionData } = this.props;
-    const { optionId, optionName, optionPrice, optionStock } = selectedOption;
+    const { productPrice, selectedOption } = this.props;
+    const {
+      optionId,
+      optionName,
+      optionPrice,
+      optionStock,
+      count,
+      optionTotalPrice,
+    } = selectedOption;
     return `
         <h3>선택된 상품</h3>
         <ul>
@@ -16,17 +23,13 @@ export default class SelectedOptions extends Component {
               Number(productPrice) + Number(optionPrice),
             )}원 
             <div>
-              <input data-option-id=${optionId} name='option-input' type="number", data-option-price=${optionPrice} value=${
-              selectedOptionData.count
-            } min="1" max="${optionStock}">개
+              <input data-option-id=${optionId} name='option-input' type="number", data-option-price=${optionPrice} value=${count} min="1" max="${optionStock}">개
             </div>
           </li>
           `
           }
         </ul>
-        <div class="ProductDetail__totalPrice">${
-          selectedOptionData.optionTotalPrice
-        }</div>
+        <div class="ProductDetail__totalPrice">${optionTotalPrice}</div>
         <button class="OrderButton">주문하기</button>
         `;
   }
@@ -37,5 +40,7 @@ export default class SelectedOptions extends Component {
       $input.addEventListener('change', e => {
         this.props.onChange(e);
       });
+    const $button = this.$target.querySelector('.OrderButton');
+    $button.addEventListener('click', this.props.onSubmit);
   }
 }

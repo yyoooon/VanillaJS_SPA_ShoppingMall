@@ -7,6 +7,7 @@ import { request } from '../utils/api.js';
 export default class ProductDetailPage extends Component {
   async setup() {
     const res = await request(`/products/${this.props.id}`);
+
     this.setState({
       productData: {
         ...res,
@@ -19,9 +20,6 @@ export default class ProductDetailPage extends Component {
         optionStock: 0,
         optionName: '',
         optionPrice: 0,
-      },
-      selectedOptionData: {
-        optionId: '',
         count: 0,
         optionTotalPrice: 0,
       },
@@ -38,9 +36,8 @@ export default class ProductDetailPage extends Component {
 
     this.state.optionId !== optionId &&
       this.setState({
-        selectedOption: selectedOption,
-        selectedOptionData: {
-          optionId,
+        selectedOption: {
+          ...selectedOption,
           count: 1,
           optionTotalPrice: this.calculateOptonTotalPrice(
             productPrice,
@@ -53,12 +50,12 @@ export default class ProductDetailPage extends Component {
 
   handleChangeInput(e) {
     const { value } = e.target;
-    const { optionId, optionPrice } = e.target.dataset;
+    const { optionPrice } = e.target.dataset;
     const { productPrice } = this.state.productData;
 
     this.setState({
-      selectedOptionData: {
-        optionId,
+      selectedOption: {
+        ...this.state.selectedOption,
         count: value,
         optionTotalPrice: this.calculateOptonTotalPrice(
           productPrice,
@@ -71,6 +68,22 @@ export default class ProductDetailPage extends Component {
 
   handleSubmit() {
     const { productId } = this.state.productData;
+    const { optionId, count } = this.state.selectedOption;
+
+    if (!optionId) {
+      return;
+    }
+
+    const storage = window.localStorage.getItem('products_cart');
+    const productsCart = [
+      ...(storage ? JSON.parse(storage) : []),
+      {
+        productId,
+        optionId: optionId,
+        quantity: count,
+      },
+    ];
+    window.localStorage.setItem('products_cart', JSON.stringify(productsCart));
   }
 
   template() {
@@ -107,7 +120,7 @@ export default class ProductDetailPage extends Component {
     const $selectedOptions = this.$target.querySelector(
       '.ProductDetail__selectedOptions',
     );
-    const { productData, selectedOption, selectedOptionData } = this.state;
+    const { productData, selectedOption } = this.state;
     const { productPrice } = productData;
 
     new Select($selectContainer, {
@@ -117,8 +130,8 @@ export default class ProductDetailPage extends Component {
     new SelectedOptions($selectedOptions, {
       productPrice,
       selectedOption,
-      selectedOptionData,
       onChange: this.handleChangeInput.bind(this),
+      onSubmit: this.handleSubmit.bind(this),
     });
   }
 }
