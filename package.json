@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/yyoooon/VanillaJS_SPA_ShoppingMall#readme",
   "dependencies": {
+    "prettier": "^2.5.1",
     "serve": "^13.0.2"
   }
 }
