@@ -4,9 +4,9 @@ import {push} from '../routes/router.js'
 export default class ProductList extends Component {
 
     template(){
-        const {ProductData} = this.props;
+        const {ProductListData} = this.props;
         return`
-          ${ProductData.map(({id, name, imageUrl, price})=>`
+          ${ProductListData.map(({id, name, imageUrl, price})=>`
             <li data-id=${id} class="Product">
               <img src=${imageUrl}>
               <div class="Product__info">

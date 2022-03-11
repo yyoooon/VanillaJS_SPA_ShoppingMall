@@ -1,8 +1,5 @@
 const formatPriceAddComma = input => {
-  const formatedValue =
-    typeof input === 'string'
-      ? input
-      : String(input)
+  const formatedValue = String(input)
           .split('')
           .reverse()
           .map((str, index) => (index > 0 && index % 3 === 0 ? `${str},` : str))
