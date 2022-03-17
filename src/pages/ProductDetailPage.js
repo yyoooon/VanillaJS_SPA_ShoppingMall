@@ -3,8 +3,13 @@ import Select from '../components/Select.js';
 import SelectedOptions from '../components/SelectedOptions.js';
 import formatPriceAddComma from '../utils/formatPrice.js';
 import { request } from '../utils/api.js';
+import { push } from '../routes/router.js';
 
 export default class ProductDetailPage extends Component {
+  $selectedOptions;
+  $select;
+  // 방법을 찾았다...
+
   async setup() {
     const res = await request(`/products/${this.props.id}`);
 
@@ -35,17 +40,20 @@ export default class ProductDetailPage extends Component {
     const { productPrice } = this.state.productData;
 
     this.state.optionId !== optionId &&
-      this.setState({
-        selectedOption: {
-          ...selectedOption,
-          count: 1,
-          optionTotalPrice: this.calculateOptonTotalPrice(
-            productPrice,
-            optionPrice,
-            1,
-          ),
+      this.setState(
+        {
+          selectedOption: {
+            ...selectedOption,
+            count: 1,
+            optionTotalPrice: this.calculateOptonTotalPrice(
+              productPrice,
+              optionPrice,
+              1,
+            ),
+          },
         },
-      });
+        true,
+      );
   }
 
   handleChangeInput(e) {
@@ -53,17 +61,20 @@ export default class ProductDetailPage extends Component {
     const { optionPrice } = e.target.dataset;
     const { productPrice } = this.state.productData;
 
-    this.setState({
-      selectedOption: {
-        ...this.state.selectedOption,
-        count: value,
-        optionTotalPrice: this.calculateOptonTotalPrice(
-          productPrice,
-          optionPrice,
-          value,
-        ),
+    this.setState(
+      {
+        selectedOption: {
+          ...this.state.selectedOption,
+          count: value,
+          optionTotalPrice: this.calculateOptonTotalPrice(
+            productPrice,
+            optionPrice,
+            value,
+          ),
+        },
       },
-    });
+      true,
+    );
   }
 
   handleSubmit() {
@@ -84,6 +95,7 @@ export default class ProductDetailPage extends Component {
       },
     ];
     window.localStorage.setItem('products_cart', JSON.stringify(productsCart));
+    push('/web/cart');
   }
 
   template() {
@@ -98,7 +110,7 @@ export default class ProductDetailPage extends Component {
             <div class="ProductDetail">
             <img src=${imageUrl}>
             <div class="ProductDetail__info">
-              <h2>${productName} </h2>
+              <h2>${productName}</h2>
               <div class="ProductDetail__price">${formatPriceAddComma(
                 productPrice,
               )}</div>
@@ -109,29 +121,44 @@ export default class ProductDetailPage extends Component {
         `;
   }
 
-  mounted() {
-    if (!this.state) {
-      return;
-    }
-
-    const $selectContainer = this.$target.querySelector(
-      '.ProductDetail__selectContainer',
-    );
+  createSelectedOptionsComponent() {
     const $selectedOptions = this.$target.querySelector(
       '.ProductDetail__selectedOptions',
     );
     const { productData, selectedOption } = this.state;
     const { productPrice } = productData;
 
-    new Select($selectContainer, {
-      productData,
-      onChange: this.handleChangeSelect.bind(this),
-    });
-    new SelectedOptions($selectedOptions, {
+    this.$selectedOptions = new SelectedOptions($selectedOptions, {
       productPrice,
       selectedOption,
       onChange: this.handleChangeInput.bind(this),
       onSubmit: this.handleSubmit.bind(this),
+    });
+  }
+
+  createSelectComponent() {
+    const $selectContainer = this.$target.querySelector(
+      '.ProductDetail__selectContainer',
+    );
+    this.$select = new Select($selectContainer, {
+      productData: this.state.productData,
+      onChange: this.handleChangeSelect.bind(this),
+    });
+  }
+
+  mounted() {
+    if (!this.state) {
+      return;
+    }
+    this.createSelectComponent();
+    this.createSelectedOptionsComponent();
+  }
+
+  reRender() {
+    const { selectedOption } = this.state;
+
+    this.$selectedOptions.setState({
+      selectedOption,
     });
   }
 }

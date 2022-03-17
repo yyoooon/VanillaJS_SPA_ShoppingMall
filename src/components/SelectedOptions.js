@@ -2,8 +2,12 @@ import Component from './Component.js';
 import formatPriceAddComma from '../utils/formatPrice.js';
 
 export default class SelectedOptions extends Component {
+  setup() {
+    this.state = this.props;
+  }
+
   template() {
-    const { productPrice, selectedOption } = this.props;
+    const { productPrice, selectedOption } = this.state;
     const {
       optionId,
       optionName,
